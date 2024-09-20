@@ -391,21 +391,9 @@ git add .
  git push origin main  
 ```
 
+- 该命令用于将本地仓库的 `main` 分支的更改推送到远程仓库的 `main` 分支。
+
 查看 Github 库即可
-
-## 13.7. Bugs
-
-- 执行`git clone xxxx`的时候显示：`error setting certificate file: F:/桌面/Git/mingw64/etc/ssl/certs/ca-bundle.crt`。
-
-  - 你需要检查 ca-bundle.crt 文件是否存在。如果你确定文件确实存在，那么路径可能配置错误。
-
-  - 检查文件是否存在于 F:/桌面/Git/mingw64/etc/ssl/certs/ca-bundle.crt 这个路径。
-
-  - 如果不存在，你可以尝试重新安装 Git，确保安装时包含了证书文件。
-
-  - 如果存在，那此时是由于 Git 无法找到或无法访问正确的证书文件导致的，此时可以手动设置正确的证书文件路径。使用以下命令重新配置 Git 的证书路径：`git config --global http.sslCAInfo "xxxx"
-
-  - xxx 是你的 `ca-bundle.crt`路径`
 
 - 执行 `git push origin main`时，显示：`fatal: unable to access 'https://github.com/Carolynhomes/Project_veriable-database.git/':The requested URL returned error: 403`
 
@@ -429,11 +417,36 @@ git add .
 
   - 至此，解决 
 
-# Bugs
+- 如果我想克隆多个仓库，同时可以都在本地操作，那么我就需要 ` 生成多个 ssh key`,操作如下
+
+  - `ssh-keygen -t rsa -C "xxx@xxx.com" -f ~/.ssh/git_id_rsa`
+
+  - 邮箱是注册 github 的邮箱
+
+  - 这里需要注意，该 ``ssh-keygen -t rsa -C "xxx@xxx.com"`` 命令会默认生成为 `id_rsa` 的公钥和 `id_rsa.pub` 的私钥文件。为了防止后续生成别的 ssh 被覆盖，我们可以使用上面的代码进行修改 ， 如图，我这里修改为 `git_id_rsa`
+
+![img](./README.assets/1726837264977-06387b7f-e414-4121-91cd-6ec25aaf7390.png)
+
+
+
+​		- 不设置密码
+
+​		- 可以在.ssh 文件看到 `github_id_rsa` 文件和 `github_id_rsa.pub` 文件（隐藏）
+
+​		- 将生成的 key 添加到 github 账户中去：打开生成的 `github_id_rsa.pub` 文件，全选并复制内容；
+
+- 搞定
+
+## 13.7. Bugs
 
 - 执行`git clone xxxx`的时候显示：`error setting certificate file: F:/桌面/Git/mingw64/etc/ssl/certs/ca-bundle.crt`。
+
   - 你需要检查 ca-bundle.crt 文件是否存在。如果你确定文件确实存在，那么路径可能配置错误。
-    - 检查文件是否存在于 F:/桌面/Git/mingw64/etc/ssl/certs/ca-bundle.crt 这个路径。
-    - 如果不存在，你可以尝试重新安装 Git，确保安装时包含了证书文件。
+
+  - 检查文件是否存在于 F:/桌面/Git/mingw64/etc/ssl/certs/ca-bundle.crt 这个路径。
+
+  - 如果不存在，你可以尝试重新安装 Git，确保安装时包含了证书文件。
+
   - 如果存在，那此时是由于 Git 无法找到或无法访问正确的证书文件导致的，此时可以手动设置正确的证书文件路径。使用以下命令重新配置 Git 的证书路径：`git config --global http.sslCAInfo "xxxx"
+
   - xxx 是你的 `ca-bundle.crt`路径`
