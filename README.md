@@ -539,6 +539,7 @@ Host github.com-Repo2
 cd xxxx   # xxxx为第一个仓库目录
 git remote set-url origin git@github.com-Repo1:yourusername/Repo1.git
 
+
 cd yyyy   # xxxx为第二个仓库目录
 git remote set-url origin git@github.com-Repo2:yourusername/Repo2.git
 ```
@@ -566,3 +567,8 @@ git remote set-url origin git@github.com-Repo2:yourusername/Repo2.git
 > - **`Repo1.git`**：表示你在 GitHub 上的具体仓库的名称，在这个例子中是 `Repo1`。
 >   - `.git` 后缀是 Git 仓库的标准命名形式。
 
+## 14.7 测试配置
+
+**测试SSH连接**： 你可以分别测试两个SSH连接，以确保配置正确。
+
+`ssh -T git@github.com-xxxx`
