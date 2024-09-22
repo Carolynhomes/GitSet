@@ -450,3 +450,119 @@ git add .
   - 如果存在，那此时是由于 Git 无法找到或无法访问正确的证书文件导致的，此时可以手动设置正确的证书文件路径。使用以下命令重新配置 Git 的证书路径：`git config --global http.sslCAInfo "xxxx"
 
   - xxx 是你的 `ca-bundle.crt`路径`
+
+# 14. Github如何clone两个仓库，并同时可以同步到github
+
+> [!important]
+>
+> 刚开始最好先进入.ssh文件夹，一般在 `C:\Users\xxxx\.ssh`
+
+## 14.1 为第二个仓库生成新的SSH密钥
+
+`ssh-keygen -t rsa -C "your_github_email"`
+
+## 14.2 **命名新密钥文件**
+
+接下来起一个名字即可，为了不跟刚开始的密钥文件重名，需要自己定义一个，初始的是`id_rsa`
+
+## 14.3 密码
+
+直接空
+
+## 14.4 将新生成的公钥添加到GitHub
+
+**复制公钥**： 使用以下命令查看新生成的公钥，并将其复制到剪贴板：
+
+`cat ~/.ssh/your_customed_file.pub`
+
+**添加公钥到GitHub**：
+
+- 打开GitHub网页，登录到你的账户。
+- 点击你的头像 -> "Settings" -> "Deploy keys" -> "Add deploy Key"。
+- 将刚才复制的公钥粘贴到文本框中，并为它取一个名字，随便起，然后点击“Add SSH Key”。
+
+## 14.5 配置SSH使用不同的密钥
+
+**编辑 SSH 配置文件**： 现在，你需要配置SSH使用不同的密钥访问不同的仓库。编辑或创建SSH配置文件：
+
+`自己创建一个（如果没有）`
+
+建议使用`nano ~/.ssh/config`
+
+>**`nano`** 是一个终端文本编辑器，用于编辑文件。它在许多 Linux 和 macOS 系统中是默认的文本编辑器，操作简单。Windows 用户也可以在 Git Bash 或其他 Unix 风格的终端中使用 `nano`。
+>
+>**`~/.ssh/config`** 是 SSH 配置文件的路径。`~` 代表当前**用户的主目录**，而 `.ssh/config` 是用于存储 SSH 客户端配置的文件。如果这个文件不存在，使用此命令会自动创建一个新的配置文件。
+
+> [!warning]
+>
+> `nano`的使用方法:  
+>
+> **保存并退出**：`Ctrl + O` （保存文件），然后 `Ctrl + X`（退出编辑器）。
+>
+> **直接退出不保存**：`Ctrl + X`，然后按 `N` 不保存文件，直接退出。
+
+![image-20240922192625523](./README.assets/image-20240922192625523.png)
+
+**添加如下配置**到文件末尾，以便为每个仓库设置不同的密钥：
+
+```bash
+# 第一个仓库的配置
+Host github.com-Repo1
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/xxxxxx
+
+# 第二个仓库的配置
+Host github.com-Repo2
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/yyyyy
+
+```
+
+`参数解释`：
+
+在这个配置中：
+
+- `Host github.com-Repo1` 是一个自定义别名，代表你与 `Repo1` 的连接。这个别名可以是任意名称，但要确保唯一。
+  - 我一般喜欢 `Host github.com-仓库名`
+- `HostName github.com` 是你要连接的实际服务器地址。
+- `User git` 是使用的用户名（通常对 GitHub 使用 `git`）。
+- `IdentityFile ~/.ssh/xxxxx` 是用于这个连接的 SSH 私钥文件路径。
+  - 这个`xxxx` 就是`14.2`中的命名的新文件，可不是`.pub`文件
+
+保存该文件后，运行 Git 命令时，SSH 客户端将根据你使用的 `Host`（如 `github.com-Repo1` 或 `github.com-Repo2`）自动选择合适的 SSH 密钥。
+
+## 14.6 修改远程仓库URL
+
+```bash
+cd xxxx   # xxxx为第一个仓库目录
+git remote set-url origin git@github.com-Repo1:yourusername/Repo1.git
+
+cd yyyy   # xxxx为第二个仓库目录
+git remote set-url origin git@github.com-Repo2:yourusername/Repo2.git
+```
+
+`参数解释`：
+
+> `remote`：指 Git 仓库的远程仓库。Git 可以与多个远程仓库交互，如 `origin` 通常是默认的主远程仓库。
+>
+> `set-url`：表示你正在设置或更新远程仓库的 URL。
+>
+> `origin` 是 Git 默认的远程仓库名称。它通常指向你最初从远程服务器（如 GitHub、GitLab 或 Bitbucket）克隆的仓库。
+>
+> 当你从某个远程仓库克隆代码时，Git 默认将这个远程仓库命名为 `origin`。你可以使用不同的名称指向不同的远程仓库，但是 `origin` 是最常用的。
+>
+> 
+>
+> ### `git@github.com-Repo1:yourusername/Repo1.git`
+>
+> **这是新的远程仓库的 URL，它表示你希望 Git 使用 SSH 来访问 GitHub，并关联到某个具体的仓库**。让我们分解它的各个部分：
+>
+> - **`git@github.com-Repo1`**:
+>   - `git@`：表示这是一个通过 SSH 连接的用户，通常 GitHub 使用 `git` 作为 SSH 用户名。
+>   - `github.com-Repo1`：这个是 `Host` 别名，它来源于你之前在 `~/.ssh/config` 文件中定义的别名。
+> - **`yourusername`**：这是你的 GitHub 用户名。
+> - **`Repo1.git`**：表示你在 GitHub 上的具体仓库的名称，在这个例子中是 `Repo1`。
+>   - `.git` 后缀是 Git 仓库的标准命名形式。
+
