@@ -571,4 +571,58 @@ git remote set-url origin git@github.com-Repo2:yourusername/Repo2.git
 
 **测试SSH连接**： 你可以分别测试两个SSH连接，以确保配置正确。
 
-`ssh -T git@github.com-xxxx`
+`ssh -T git@github.com-xxxx`    xxx是定义的别名
+
+# 15. 分支管理
+
+## 15.1. 创建 与合并 分支
+
+```bash
+# 创建dev分支，然后切换到dev分支
+git checkout -b dev
+# git checkout命令加上-b参数表示创建并切换，相当于以下两条命令：
+git branch dev
+git checkout dev
+
+# 然后用 git branch命令查看当前分支
+git branch
+# git branch命令会列出所有分支，当前分支前面会标一个*号。
+
+# 然后，我们就可以在dev分支上正常提交，比如对readme.txt做个修改，加上一行：
+# Creating a new branch is quick.
+
+# 提交
+git add readme.txt 
+git commit -m "branch test"
+
+# 现在，dev分支的工作完成，我们就可以切换回master分支：
+git checkout master
+# 切换回master分支后，再查看一个readme.txt文件，刚才添加的内容不见了！
+# 因为那个提交是在dev分支上，而master分支此刻的提交点并没有变
+
+# 现在，我们把dev分支的工作成果合并到master分支上：
+git merge dev
+# git merge命令用于合并指定分支到当前分支。
+# 合并后，再查看readme.txt的内容，就可以看到，和dev分支的最新提交是完全一样的。
+
+# 注意到上面的Fast-forward信息，Git告诉我们，这次合并是“快进模式”，也就是直接把master指向dev的当前提交，所以合并速度非常快。
+# 合并完成后，就可以放心地删除dev分支了：
+git branch -d dev
+
+# 删除后，查看branch，就只剩下master分支了：
+git branch
+
+# 创建并切换到新的dev分支，可以使用
+git switch -c dev
+# 直接切换到已有的master分支，可以使用
+git switch master
+```
+
+Git鼓励大量使用分支：
+
+- 查看分支：`git branch`
+- 创建分支：`git branch <name>`
+- 切换分支：`git checkout <name>`或者`git switch <name>`
+- 创建+切换分支：`git checkout -b <name>`或者`git switch -c <name>`
+- 合并某分支到当前分支：`git merge <name>`
+- 删除分支：`git branch -d <name>`
