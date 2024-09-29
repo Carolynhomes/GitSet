@@ -456,6 +456,8 @@ git add .
 > [!important]
 >
 > 刚开始最好先进入.ssh文件夹，一般在 `C:\Users\xxxx\.ssh`
+>
+> 或者  14.1 直接这么写：`ssh-keygen -t rsa -C "hu0925@88.com" -f ~/.ssh/xxx_id_rsa` 这样不需要起名字了，因为后面`xxx_id_rsa`就是自己创建的文件名
 
 ## 14.1 为第二个仓库生成新的SSH密钥
 
@@ -626,3 +628,14 @@ Git鼓励大量使用分支：
 - 创建+切换分支：`git checkout -b <name>`或者`git switch -c <name>`
 - 合并某分支到当前分支：`git merge <name>`
 - 删除分支：`git branch -d <name>`
+
+# 报错汇总
+
+## 1. 远程仓库和本地仓库合并冲突
+
+一般是远程仓库包含你本地所没有的内容，此时的解决办法:
+
+- `git pull origin main` 将远程仓库拉到你本地，当然会将你本地覆盖
+- 进行你想要的修改（`那么问题来了，应该首先将原本的备份一下，然后直接复制过去 对吧`）
+- 最后执行一系列的`push操作` ： `git add .`  `git commit -m "xxx"`  `git push origin main`
+
